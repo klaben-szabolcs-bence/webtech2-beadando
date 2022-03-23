@@ -1,2 +1,2 @@
 # webtech2-beadando
-Web technologies II assigment @ University of Miskolc
+Web technologies II assignment @ University of Miskolc
