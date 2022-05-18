@@ -39,7 +39,6 @@ app.post('/api/login', async (req, res) => {
         // Make a session and log in user
         req.session.user = resp['id'];
         req.session.save();
-        console.log(req.session);
         return res.status(200).send(resp);
     }
 
@@ -73,9 +72,14 @@ app.get('/api/user', async (req, res) => {
     res.status(200).send(resp);
 });
 
-app.get('/api/logout', (req, res) => {
-    req.session.destroy();
-    return res.status(200).send("Logged out");
+app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(400).send(err);
+        } else {
+            return res.status(200).json({ "message": "Logged out" });
+        }
+    });
 });
 
 app.get('/api/messages', async (req, res) => {

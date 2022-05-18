@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { catchError, throwError, Observable } from 'rxjs';
+import { catchError, throwError, Observable, map } from 'rxjs';
 import { User } from './user';
+import { Router } from '@angular/router';
+
 
 interface AuthResponseData {
   user: number;
@@ -17,7 +19,7 @@ interface LoginErrorResponse {
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private route: Router) { }
 
   private LoggedIn = false;
   public LoggedInUser = -1;
@@ -41,4 +43,13 @@ export class AuthService {
   isLoginErrorResponse(response: User | LoginErrorResponse): response is LoginErrorResponse {
     return (<LoginErrorResponse>response).message !== undefined;
   }
+
+  logout() {
+    this.LoggedIn = false;
+    this.LoggedInUser = -1;
+    this.http.post('/api/logout', {}).subscribe(() => {
+      this.route.navigate(['/login']);
+    });
+  }
+
 }

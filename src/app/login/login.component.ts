@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { is } from '@babel/types';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +11,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private Auth: AuthService, private router: Router) { }
 
+  hide = true;
 
   ngOnInit(): void {
     if (this.Auth.isLoggedIn) {

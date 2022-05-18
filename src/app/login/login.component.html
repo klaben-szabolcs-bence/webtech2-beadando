@@ -1,7 +1,17 @@
-<form (submit)="loginUser($event, username, password)">
-    <input type="text" #username id="username">
-    <label for="username">Username</label>
-    <input type="password" #password id="password">
-    <label for="password">Password</label>
-    <input type="submit" value="Login">
-</form>
+<div id="login-wrapper">
+    <form (submit)="loginUser($event, username, password)">
+        <mat-form-field>
+            <mat-label for="username">Username</mat-label>
+            <input matInput type="text" #username id="username">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label for="password">Password</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" #password id="password">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Login</button>
+    </form>
+</div>
