@@ -9,7 +9,8 @@ import { Message } from '../message';
 export class MessageComponent implements OnInit {
 
   @Input() public message: Message = {
-    id: "-1",
+    _id: '',
+    id: -1,
     senderId: "",
     timestamp: new Date(),
     content: ""

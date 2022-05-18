@@ -2,7 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const bycrypt = require('bcrypt');
+const session = require('express-session');
 const app = express();
+
+app.use(session({
+    secret: 'this-should-be-read-from-an-enviromental-variable',
+    saveUninitialized: false,
+    resave: false
+}));
 
 mongoose.Promise = Promise;
 mongoose.connect('mongodb://localhost:27017/WebTech2')
@@ -23,27 +30,52 @@ app.post('/api/login', async (req, res) => {
     const resp = await User.findOne({ username, password })
 
     if (!resp) {
-        return res.status(404).send("User not found");
+        return res.status(200).json(
+            {
+                message: "Invalid username or password"
+            }
+        );
     } else {
         // Make a session and log in user
+        req.session.user = resp['id'];
+        req.session.save();
+        console.log(req.session);
         return res.status(200).send(resp);
     }
 
 });
 
+app.get('/api/session', (req, res) => {
+    console.log(req.session);
+    if (req.session.user != undefined) {
+        return res.status(200).json(
+            { "user": req.session.user, "message": "Logged in as user " + req.session.user }
+        );
+    } else {
+        return res.status(200).json(
+            { "user": null, "message": "Not logged in" }
+        );
+    }
+});
+
 app.get('/api/user', async (req, res) => {
     const { id, _id } = req.query;
 
-    if (!id || !_id) {
+    if (!id && !_id) {
         return res.status(400).send("No user requested");
     }
 
     const resp = await User.findOne({ $or: [{ id }, { _id }] }).select('-password');
     if (!resp) {
-        return res.status(404).send('User not found');
+        return res.status(200).json({ "user": null });
     }
 
     res.status(200).send(resp);
+});
+
+app.get('/api/logout', (req, res) => {
+    req.session.destroy();
+    return res.status(200).send("Logged out");
 });
 
 app.get('/api/messages', async (req, res) => {
@@ -80,8 +112,8 @@ app.put('/api/register', async (req, res) => {
         return res.status(400).send('Invalid request');
     }
 
-    if (User.findOne({ username })) {
-        return res.status(409).send('Username already exists');
+    if (await User.findOne({ email })) {
+        return res.status(200).json({ "message": "Email already in use" });
     }
 
     bycrypt.hash(password, 10, async (err, hash) => {
