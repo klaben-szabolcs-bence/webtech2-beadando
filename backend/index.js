@@ -13,21 +13,31 @@ const Message = require('./models/message');
 
 app.use(bodyParser.json());
 
-app.get('/api/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).send("Not enough information provided");
+    }
+
     const resp = await User.findOne({ username, password })
 
     if (!resp) {
-        return res.status(404).send('User not found');
+        return res.status(404).send("User not found");
     } else {
         // Make a session and log in user
-        return res.status(200).send('User found');
+        return res.status(200).send(resp);
     }
 
 });
 
 app.get('/api/user', async (req, res) => {
     const { id, _id } = req.query;
+
+    if (!id || !_id) {
+        return res.status(400).send("No user requested");
+    }
+
     const resp = await User.findOne({ $or: [{ id }, { _id }] }).select('-password');
     if (!resp) {
         return res.status(404).send('User not found');
@@ -41,7 +51,7 @@ app.get('/api/messages', async (req, res) => {
     res.status(200).send(resp);
 });
 
-app.post('/api/message', async (req, res) => {
+app.put('/api/message', async (req, res) => {
     const { content, senderId } = req.body;
     const id = await Message.count();
     const timestamp = new Date();
@@ -62,9 +72,17 @@ app.post('/api/message', async (req, res) => {
     return res.status(201).send(resp);
 });
 
-app.post('/api/register', async (req, res) => {
+app.put('/api/register', async (req, res) => {
     const { username, password, email } = req.body;
     const id = await User.count();
+
+    if (!username || !password || !email) {
+        return res.status(400).send('Invalid request');
+    }
+
+    if (User.findOne({ username })) {
+        return res.status(409).send('Username already exists');
+    }
 
     bycrypt.hash(password, 10, async (err, hash) => {
         if (!err) {
