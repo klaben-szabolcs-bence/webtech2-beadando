@@ -15,7 +15,9 @@ import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/mat
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
 import { AuthService } from './auth.service';
+import { UserIdToNamePipe } from './user-id-to-name.pipe';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { AuthService } from './auth.service';
     NewMessageComponent,
     LoginComponent,
     MessageComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    UserIdToNamePipe
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { AuthService } from './auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatCardModule
   ],
   providers: [MessageService, AuthService, { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }],
   bootstrap: [AppComponent]
