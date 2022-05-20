@@ -1,16 +1,29 @@
-<div id="login-wrapper">
+<div>
     <form (submit)="loginUser($event, username, password)">
         <mat-form-field>
             <mat-label for="username">Username</mat-label>
-            <input matInput type="text" #username id="username">
+            <input matInput [formControl]="usernameFormControl" type="text" #username id="username">
+            <mat-error *ngIf="usernameFormControl.hasError('required')">
+                You must enter a username
+            </mat-error>
+            <mat-error *ngIf="usernameFormControl.hasError('maxlength')">
+                Username must be less than 50 characters
+            </mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label for="password">Password</mat-label>
-            <input matInput [type]="hide ? 'password' : 'text'" #password id="password">
+            <input matInput [type]="hide ? 'password' : 'text'" #password id="password"
+            [formControl]="passwordFormControl">
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide">
                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
+            <mat-error *ngIf="passwordFormControl.hasError('required')">
+                You must enter a password
+            </mat-error>
+            <mat-error *ngIf="passwordFormControl.hasError('minlength')">
+                Password must be at least 6 characters
+            </mat-error>
         </mat-form-field>
         <button mat-raised-button color="primary" type="submit">Login</button>
     </form>

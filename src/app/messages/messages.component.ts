@@ -13,9 +13,12 @@ export class MessagesComponent implements OnInit {
   constructor(private _messagesService: MessageService) { }
 
   ngOnInit(): void {
+    this.updateMessages();
+  }
+
+  public updateMessages() {
     this._messagesService.getMessages().subscribe(data => {
       this.messages = data;
     });
   }
-
 }

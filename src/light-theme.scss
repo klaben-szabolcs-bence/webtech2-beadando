@@ -16,3 +16,4 @@ $theme: mat.define-light-theme(
         ),
     )
 );
+$bg-color: map-get(map-get($theme, background), background);

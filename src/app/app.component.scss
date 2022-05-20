@@ -10,24 +10,37 @@ a {
 @media (max-width: 768px) {
   .flex-spacer {
     justify-self: stretch;
-    grid-column-start: 3;
+    display:none;
   }
 
   mat-toolbar {
     display: grid;
-    grid-template-columns: 10px auto auto auto;
+    grid-template-columns: 3fr 2fr 1fr;
+    grid-template-rows: 100%;
     gap: 5px;
     align-content: center;
     justify-content: right;
   }
 
-  #home {
-    grid-column-start: 2;
+  mat-toolbar * {
+    font-size: small !important;
+    display:inline;
   }
 
+  #home {
+    grid-column: 1/2;
+    grid-row: 1/1;
+    justify-self: left;
+  }
+
+  #account {
+    grid-column: 2/3;
+    grid-row: 1/1;
+  }
   #logout {
-    grid-column-start: 4;
-    text-align: right;
+    grid-column: 3/4;
+    grid-row: 1/1;
+    justify-self: right;
   }
 
   #logout a mat-icon {
@@ -36,13 +49,13 @@ a {
 
 }
 
-#icon-label {
+.icon-label {
   margin-left: 8px;
   display: inline;
 }
 
 @media (min-width: 768px) {
-  #icon-label {
+  .icon-label {
     font-size: 20px;
     vertical-align: middle;
   }

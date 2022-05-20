@@ -16,8 +16,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
 import { UserIdToNamePipe } from './user-id-to-name.pipe';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
+import { InviteComponent } from './invite/invite.component';
+import { AbstractToFormControlPipe } from './abstract-to-form-control.pipe';
+import { MatchPasswordDirective } from './match-password.directive';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { TouchedErrorStateMatcher } from './touched-error-state.matcher';
+
 
 @NgModule({
   declarations: [
@@ -27,7 +36,10 @@ import { UserIdToNamePipe } from './user-id-to-name.pipe';
     LoginComponent,
     MessageComponent,
     PageNotFoundComponent,
-    UserIdToNamePipe
+    UserIdToNamePipe,
+    InviteComponent,
+    AbstractToFormControlPipe,
+    MatchPasswordDirective
   ],
   imports: [
     BrowserModule,
@@ -39,9 +51,13 @@ import { UserIdToNamePipe } from './user-id-to-name.pipe';
     MatInputModule,
     MatIconModule,
     MatToolbarModule,
-    MatCardModule
+    MatCardModule,
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
-  providers: [MessageService, AuthService, { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }],
+  providers: [CookieService, MessageService, AuthService,
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    { provide: ErrorStateMatcher, useClass: TouchedErrorStateMatcher }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

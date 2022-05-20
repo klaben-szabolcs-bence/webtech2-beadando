@@ -1,14 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { catchError, throwError, Observable, map } from 'rxjs';
+import { catchError, throwError, Observable, map, Subscription } from 'rxjs';
 import { User } from './models/user';
 import { Router } from '@angular/router';
-
-
-interface AuthResponseData {
-  user: number;
-  message: string;
-}
 
 interface LoginErrorResponse {
   message: string;
@@ -23,6 +17,7 @@ export class AuthService {
 
   private LoggedIn = false;
   public LoggedInUser = -1;
+  public Admin = false;
 
   get isLoggedIn() {
     return this.LoggedIn;
@@ -32,17 +27,42 @@ export class AuthService {
     this.LoggedIn = loggedIn;
   }
 
-  isLoggedInOnServer(): Observable<HttpResponse<AuthResponseData>> {
-    return this.http.get<AuthResponseData>('/api/session', { observe: 'response' });
+  isLoggedInOnServer(): Observable<HttpResponse<LoginErrorResponse | User>> {
+    return this.http.get<LoginErrorResponse | User>('/api/session', { observe: 'response' });
   }
 
-  getUserDetails(username: string, password: string) {
+  authenticate(username: string, password: string) {
     return this.http.post<User | LoginErrorResponse>('/api/login', { username, password }, { observe: 'response' });
+  }
+
+  getUserDetails(id: number): Observable<User> {
+    return this.http.get<User>('/api/user?id=' + id);
   }
 
   isLoginErrorResponse(response: User | LoginErrorResponse): response is LoginErrorResponse {
     return (<LoginErrorResponse>response).message !== undefined;
   }
+
+  autoLogin(): boolean | Observable<boolean> {
+    if (this.isLoggedIn) {
+      return true;
+    }
+    return this.isLoggedInOnServer().pipe(map(res => {
+      if (!res.body) {
+        console.log("autoLogin: Server didn't return a response body.");
+        return false;
+      }
+      if (this.isLoginErrorResponse(res.body)) {
+        console.log("autoLogin: Session got invalidated. Reason: " + res.body.message);
+        return false;
+      }
+      this.setLoggedIn(true);
+      this.LoggedInUser = res.body.id;
+      this.Admin = res.body.admin;
+      return true;
+    }));
+  }
+
 
   logout() {
     this.LoggedIn = false;

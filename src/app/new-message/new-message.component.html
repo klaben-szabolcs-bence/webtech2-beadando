@@ -1,1 +1,16 @@
-<p>new-message works!</p>
+<div>
+    <form (submit)="sendMessage($event, content)">
+        <mat-form-field>
+            <mat-label for="content">Content</mat-label>
+            <textarea matInput [formControl]="contentFormControl" type="text" #content  id="content" maxlength="1000"></textarea>
+            <mat-hint align="end">{{ content.value.length }} / 1000</mat-hint>
+            <mat-error *ngIf="contentFormControl.hasError('required')">
+                You must enter some content
+            </mat-error>
+            <mat-error *ngIf="contentFormControl.hasError('maxlength')">
+                Content must be less than 1000 characters
+            </mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Send</button>
+    </form>
+</div>

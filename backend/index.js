@@ -27,34 +27,45 @@ app.post('/api/login', async (req, res) => {
         return res.status(400).send("Not enough information provided");
     }
 
-    const resp = await User.findOne({ username, password })
-
-    if (!resp) {
-        return res.status(200).json(
-            {
-                message: "Invalid username or password"
-            }
-        );
-    } else {
-        // Make a session and log in user
-        req.session.user = resp['id'];
-        req.session.save();
-        return res.status(200).send(resp);
+    if (password.length < 6) {
+        return res.status(400).send("Password must be at least 6 characters long");
     }
 
+    if (username.length > 50) {
+        return res.status(400).send("Username must be less than 50 characters long");
+    }
+
+    const user = await User.findOne({ username });
+
+    bycrypt.compare(password, user.password, (err, result) => {
+        if (err) {
+            return res.status(500).send("Error logging in");
+        }
+
+        if (!result) {
+            return res.status(200).json({ "message": "Incorrect username or password" });
+        }
+
+        console.log(user);
+
+        req.session.userid = user.id;
+        req.session.save();
+        res.status(200).send(user);
+    });
 });
 
 app.get('/api/session', (req, res) => {
-    console.log(req.session);
-    if (req.session.user != undefined) {
-        return res.status(200).json(
-            { "user": req.session.user, "message": "Logged in as user " + req.session.user }
-        );
-    } else {
-        return res.status(200).json(
-            { "user": null, "message": "Not logged in" }
-        );
+    if (req.session.userid == undefined) {
+        return res.status(200).json({ "message": "No user logged in" });
     }
+
+    User.findOne({ id: req.session.userid })
+        .then((user) => {
+            res.status(200).send(user);
+        })
+        .catch((err) => {
+            res.status(500).send("Error finding user");
+        });
 });
 
 app.get('/api/user', async (req, res) => {
@@ -66,7 +77,12 @@ app.get('/api/user', async (req, res) => {
 
     const resp = await User.findOne({ $or: [{ id }, { _id }] }).select('-password');
     if (!resp) {
-        return res.status(200).json({ "user": null });
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).send("Error destroying session");
+            }
+            return res.status(200).json({ "user": null, "message": "User not found" });
+        });
     }
 
     res.status(200).send(resp);
@@ -91,8 +107,9 @@ app.put('/api/message', async (req, res) => {
     const { content, senderId } = req.body;
     const id = await Message.count();
     const timestamp = new Date();
+    console.log(content + " " + senderId);
 
-    if (!content || !senderId) {
+    if (!content || senderId == undefined) {
         return res.status(400).send('Invalid request');
     }
 
@@ -120,14 +137,24 @@ app.put('/api/register', async (req, res) => {
         return res.status(200).json({ "message": "Email already in use" });
     }
 
+    const inviter = await User.findOne({ "id": req.session.userid });
+    if (!inviter) {
+        return res.status(400).send('Invalid request');
+    }
+
+    if (!inviter.admin) {
+        return res.status(400).send('Not an admin');
+    }
+
     bycrypt.hash(password, 10, async (err, hash) => {
         if (!err) {
-            const resp = await User.create({ id, username, 'password': hash, email });
+            const resp = await User.create({ id, username, 'password': hash, email, 'admin': false });
             return res.status(201).send(resp);
         } else {
             return res.status(500).send('Error: ' + err);
         }
     });
+    /* In reality, the password should be generated not asked, and the invited emailed with the password */
 });
 
 app.listen(1234, () => { console.log('Server is running on port 1234') });

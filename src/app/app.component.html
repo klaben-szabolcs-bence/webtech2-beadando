@@ -1,13 +1,25 @@
 <mat-toolbar color="primary" class="expanded-toolbar">
     <span id="home">
-        <a mat-button routerLink="/" >
+        <a mat-button routerLink="/">
             <mat-icon>home</mat-icon>
-            <h1 id="icon-label">MessageBoard</h1>
+            <h1 class="icon-label">MessageBoard</h1>
         </a>
     </span>
     <span class="flex-spacer"></span>
-    <span id="logout">
-        <a mat-button (click)="this.auth.logout()" *ngIf="this.auth.isLoggedIn">
+    <span id="invite" *ngIf="this.auth.isLoggedIn && this.auth.Admin">
+        <a mat-button routerLink="/invite">
+            <mat-icon>person_add</mat-icon>
+            <h1 class="icon-label">Invite</h1>
+        </a>
+    </span>
+    <span id="account" *ngIf="this.auth.isLoggedIn">
+        <a>
+            <mat-icon>account_circle</mat-icon>
+            <span class="icon-label">{{ this.auth.LoggedInUser | userIdToName | async }}</span>
+        </a>
+    </span>
+    <span id="logout" *ngIf="this.auth.isLoggedIn">
+        <a mat-button (click)="this.auth.logout()">
             <mat-icon>logout</mat-icon>
         </a>
     </span>
