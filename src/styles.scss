@@ -3,14 +3,15 @@
 @use "@angular/material" as mat;
 @use "light-theme" as light;
 
-@include mat.core-theme(light.$theme);
-@include mat.button-theme(light.$theme);
-@include mat.form-field-theme(light.$theme);
-@include mat.input-theme(light.$theme);
-@include mat.icon-theme(light.$theme);
-@include mat.toolbar-theme(light.$theme);
-@include mat.card-theme(light.$theme);
-@include mat.snack-bar-theme(light.$theme);
+@include mat.core-theme(light.$light-theme);
+@include mat.button-theme(light.$light-theme);
+@include mat.form-field-theme(light.$light-theme);
+@include mat.input-theme(light.$light-theme);
+@include mat.icon-theme(light.$light-theme);
+@include mat.toolbar-theme(light.$light-theme);
+@include mat.card-theme(light.$light-theme);
+@include mat.snack-bar-theme(light.$light-theme);
+@include mat.dialog-theme(light.$light-theme);
 
 html,
 body {
@@ -22,22 +23,12 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.notif-success {
-    color: #155724 !important; // green
-    background-color: #d4edda !important;
-    border-color: #c3e6cb !important;
-
-    .mat-simple-snackbar-action {
-        color: #155724 !important;
-    }
-}
-
-.notif-error {
-    color: #721c24 !important; // red
-    background-color: #f8d7da !important;
+.notif-warn {
+    @include light.get-theme-color-property(color, warn, 500);
+    @include light.get-theme-color-property(background-color, warn, 500);
     border-color: #f5c6cb !important;
 
     .mat-simple-snackbar-action {
-        color: #721c24 !important;
+        @include light.get-theme-color-property(color, warn, 500);
     }
 }

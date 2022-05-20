@@ -21,7 +21,7 @@ export class InviteComponent implements OnInit {
     private snackBar: MatSnackBar) {
     const formOptions: AbstractControlOptions = { validators: [matchPassword] };
     this.inviteForm = this.formBuilder.group({
-      username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      username: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -64,10 +64,10 @@ export class InviteComponent implements OnInit {
       email: email.value
     }, { observe: "response" }).subscribe((res) => {
       if (res.status == 201) {
-        this.snackBar.open("Successfully registered", "", { duration: 4000, panelClass: ["notif-success"] });
+        this.snackBar.open("Successfully registered", "", { duration: 4000 });
       }
       else {
-        this.snackBar.open("Error inviting", "", { duration: 4000, panelClass: ["notif-error"] });
+        this.snackBar.open("Error inviting", "", { duration: 4000, panelClass: ["notif-warn"] });
       }
     });
   }

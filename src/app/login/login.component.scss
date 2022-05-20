@@ -1,5 +1,7 @@
+@use "../app.component" as app;
+
 div {
-    height: 80%;
+    height: calc(90vh - app.$toolbar-height);
     width: 100%;
     display: flex;
     align-items: center;

@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Editing User {{data.user.username}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label for="username">Username</mat-label>
+            <input matInput [formControl]="form.controls['username'] | abstractToFormControl" type="text"
+                name="username" #username [(ngModel)]="data.user.username">
+            <mat-hint align="end">{{ username.value.length }} / 50</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label for="email">Email</mat-label>
+            <input matInput formControlName="email" type="email" [(ngModel)]="data.user.email">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label for="password">New Password</mat-label>
+            <input matInput formControlName="password" type="password" [(ngModel)]="data.password">
+            <mat-hint>Type something and delete it to be able to save</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label for="confirmPassword">Confirm Password</mat-label>
+            <input matInput formControlName="confirmPassword" type="password">
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="data" [disabled]="!form.valid" color="primary">Save</button>
+</div>

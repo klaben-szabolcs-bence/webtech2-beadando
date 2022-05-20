@@ -3,7 +3,6 @@ import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } fro
 import { map, Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'

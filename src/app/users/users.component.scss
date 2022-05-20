@@ -1,14 +1,14 @@
 @use "../app.component" as app;
 
-#messages {
+div {
     padding: 6px;
     margin: auto;
     width: 80%;
     list-style: none;
     overflow: auto;
-    height: calc(97vh - app.$toolbar-height);
+    height: calc(90vh - app.$toolbar-height);
 }
 
-#messages h2 {
+h2 {
     text-align: center;
 }

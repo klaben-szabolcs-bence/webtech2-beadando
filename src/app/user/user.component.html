@@ -1,0 +1,21 @@
+<mat-card class="user-card">
+    <mat-card-header>
+        <mat-card-title>{{ user.username }} <mat-icon *ngIf="user.admin" color="primary">shield</mat-icon>
+        </mat-card-title>
+        <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions>
+        <button mat-button *ngIf="this.auth.Admin" color="primary" (click)="toggleAdmin()">
+            <mat-icon *ngIf="user.admin">remove_moderator</mat-icon>
+            <mat-icon *ngIf="!user.admin">add_moderator</mat-icon>
+        </button>
+        <button mat-button *ngIf="this.auth.Admin || this.auth.LoggedInUser === user.id" color="primary"
+            (click)="editUser()">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-button *ngIf="!user.admin && (this.auth.Admin || this.auth.LoggedInUser === user.id)"
+            color="warn" (click)="onDelete()">
+            <mat-icon>person_remove</mat-icon>
+        </button>
+    </mat-card-actions>
+</mat-card>

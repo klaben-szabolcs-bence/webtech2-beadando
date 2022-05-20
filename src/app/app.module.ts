@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from './auth.service';
 import { UserIdToNamePipe } from './user-id-to-name.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -26,6 +27,9 @@ import { AbstractToFormControlPipe } from './abstract-to-form-control.pipe';
 import { MatchPasswordDirective } from './match-password.directive';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { TouchedErrorStateMatcher } from './touched-error-state.matcher';
+import { UsersComponent } from './users/users.component';
+import { UserComponent } from './user/user.component';
+import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
 
 
 @NgModule({
@@ -39,7 +43,10 @@ import { TouchedErrorStateMatcher } from './touched-error-state.matcher';
     UserIdToNamePipe,
     InviteComponent,
     AbstractToFormControlPipe,
-    MatchPasswordDirective
+    MatchPasswordDirective,
+    UsersComponent,
+    UserComponent,
+    UserEditDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +60,8 @@ import { TouchedErrorStateMatcher } from './touched-error-state.matcher';
     MatToolbarModule,
     MatCardModule,
     ReactiveFormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [CookieService, MessageService, AuthService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
