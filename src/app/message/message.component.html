@@ -4,4 +4,10 @@
         <mat-card-subtitle>{{ message.timestamp | date:'medium' }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>{{ message.content }}</mat-card-content>
+    <mat-card-actions *ngIf="message.senderId == this.auth.LoggedInUser || this.auth.Admin">
+        <button mat-button color="warn" (click)="onDelete()">
+            <mat-icon *ngIf="message.senderId == this.auth.LoggedInUser">delete</mat-icon>
+            <mat-icon *ngIf="this.auth.Admin && message.senderId != this.auth.LoggedInUser">delete_forever</mat-icon>
+        </button>
+    </mat-card-actions>
 </mat-card>

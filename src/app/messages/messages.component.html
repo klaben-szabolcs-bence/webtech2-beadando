@@ -1,5 +1,5 @@
 <div id="messages">
     <h2>Public Messages</h2>
     <app-new-message [messages]=this></app-new-message>
-    <app-message *ngFor="let message of messages" [message]="message"></app-message>
+    <app-message *ngFor="let message of messages" [message]="message" [messages]=this></app-message>
 </div>
