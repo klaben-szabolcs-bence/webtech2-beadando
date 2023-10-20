@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
       this.Auth.LoggedInUser = response.body.id;
       this.Auth.setLoggedIn(true);
       this.Auth.Admin = response.body.admin;
+      this.Auth.LoggedInUserName = response.body.username;
       this.router.navigate(['/messages']);
     });
   }

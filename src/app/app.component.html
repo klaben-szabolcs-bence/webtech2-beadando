@@ -6,21 +6,29 @@
         </a>
     </span>
     <span class="flex-spacer"></span>
-    <span id="invite" *ngIf="this.auth.isLoggedIn && this.auth.Admin">
+    <span id="users" *ngIf="this.auth.isLoggedIn">
+        <a mat-button routerLink="/users">
+            <mat-icon>people</mat-icon>
+            <span class="icon-label">Users</span>
+        </a>
+    </span>
+    <span id="invite" *ngIf="this.auth.isLoggedIn">
         <a mat-button routerLink="/invite">
             <mat-icon>person_add</mat-icon>
-            <h1 class="icon-label">Invite</h1>
+            <span class="icon-label">Invite</span>
         </a>
     </span>
     <span id="account" *ngIf="this.auth.isLoggedIn">
-        <a>
-            <mat-icon>account_circle</mat-icon>
-            <span class="icon-label">{{ this.auth.LoggedInUser | userIdToName | async }}</span>
+        <a mat-button (click)="editSelf()">
+            <mat-icon *ngIf="!this.auth.Admin">account_circle</mat-icon>
+            <mat-icon *ngIf="this.auth.Admin">shield</mat-icon>
+            <span class="icon-label">{{ this.auth.LoggedInUserName}}</span>
         </a>
     </span>
     <span id="logout" *ngIf="this.auth.isLoggedIn">
         <a mat-button (click)="this.auth.logout()">
             <mat-icon>logout</mat-icon>
+            <span class="icon-label"></span>
         </a>
     </span>
 </mat-toolbar>

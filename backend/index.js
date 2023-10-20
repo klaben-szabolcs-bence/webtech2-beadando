@@ -157,7 +157,7 @@ app.put('/api/register', async (req, res) => {
         return res.status(200).json({ "message": "Email already in use" });
     }
 
-    if (!req.session.admin) {
+    if (req.session.admin.userid == undefined) {
         return res.status(401).json({ "message": "Unauthorized" });
     }
 
@@ -170,6 +170,72 @@ app.put('/api/register', async (req, res) => {
         }
     });
     /* In reality, the password should be generated not asked, and the invited emailed with the password */
+});
+
+app.delete('/api/user', async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).send('Invalid request');
+    }
+
+    if (req.session.admin) {
+        return res.status(401).json({ "message": "Unauthorized" });
+    }
+
+    User.deleteOne({ id }).then(() => {
+        res.status(200).json({ "message": "User deleted" });
+    }).catch((err) => {
+        res.status(500).json({ "message": "Error deleting user" });
+    });
+});
+
+app.put('/api/user', async (req, res) => {
+    let { id, username, password, email, admin } = req.body;
+
+    if (id == undefined) {
+        return res.status(400).send('Invalid request');
+    }
+
+    const user = await User.findOne({ id });
+    if (user == undefined) {
+        return res.status(404).json({ "message": "User not found" });
+    }
+
+    if (id != req.session.userid && !req.session.admin) {
+        return res.status(401).json({ "message": "Unauthorized" });
+    }
+
+    // Assign unassigned fields
+    if (!username) username = user.username;
+    if (!email) email = user.email;
+    if (admin == undefined) admin = user.admin;
+
+    // Generate new password
+
+    if (password) {
+        bycrypt.hash(password, 10, async (err, hash) => {
+            if (!err) {
+                const resp = await User.updateOne({ id }, { username, 'password': hash, email, admin });
+                return res.status(200).send(resp);
+            } else {
+                return res.status(500).send('Error: ' + err);
+            }
+        });
+    }
+
+    // Update user with no password change
+    User.updateOne({ id }, { username, email, admin }).then(() => {
+        res.status(200).json({ "message": "User updated" });
+    }
+    ).catch((err) => {
+        res.status(500).json({ "message": "Error updating user" });
+    });
+});
+
+app.get('/api/users', async (req, res) => {
+    const resp = await User.find().select('-password');
+    res.status(200).send(resp);
 });
 
 app.listen(1234, () => { console.log('Server is running on port 1234') });

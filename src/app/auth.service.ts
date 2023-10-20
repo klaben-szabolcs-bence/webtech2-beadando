@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { catchError, throwError, Observable, map, Subscription } from 'rxjs';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 import { User } from './models/user';
 import { Router } from '@angular/router';
 
@@ -17,6 +17,7 @@ export class AuthService {
 
   private LoggedIn = false;
   public LoggedInUser = -1;
+  public LoggedInUserName: string = "";
   public Admin = false;
 
   get isLoggedIn() {
@@ -59,6 +60,7 @@ export class AuthService {
       this.setLoggedIn(true);
       this.LoggedInUser = res.body.id;
       this.Admin = res.body.admin;
+      this.LoggedInUserName = res.body.username;
       return true;
     }));
   }

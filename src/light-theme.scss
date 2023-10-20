@@ -7,13 +7,61 @@ $primary-palette: mat.define-palette(mat.$blue-palette);
 $accent-palette: mat.define-palette(mat.$cyan-palette, A200, A100, A400);
 $warn-palette: mat.define-palette(mat.$red-palette);
 
-$theme: mat.define-light-theme(
-    (
-        color: (
-            primary: $primary-palette,
-            accent: $accent-palette,
-            warn: $warn-palette
-        ),
-    )
-);
-$bg-color: map-get(map-get($theme, background), background);
+$light-theme: mat.define-light-theme((color: (primary: $primary-palette,
+                accent: $accent-palette,
+                warn: $warn-palette ),
+        ));
+$dark-theme: mat.define-dark-theme((color: (primary: $primary-palette,
+                accent: $accent-palette,
+                warn: $warn-palette ),
+        ));
+$bg-color: map-get(map-get($light-theme, background), background);
+
+/// Gets the CSS property and it's computed value for both light and dark themes.
+/// @param {String} $property The css property to set. ex: background, color, background-color, border-color etc.
+/// @param {String} $color Theme color. Accepted values are: primary, accent, or warn.
+/// @param {String | Number} $hue The hue from the palette to use. If this is a value between 0 and 1, it will be treated as opacity. Ex values: 500, 500-contrast, darker, darker-contrast
+/// @returns {CssProperty} CSS property with it's computed value for the both light and dark themes.
+@mixin get-theme-color-property($property: null, $color: null, $hue: null) {
+    // Get the color config from the theme.
+    $light-color-config: mat.get-color-config($light-theme);
+    // Get the required color palette from the color-config.
+    $light-color-palette: map.get($light-color-config, $color);
+
+    // Get the color config from the theme.
+    $dark-color-config: mat.get-color-config($dark-theme);
+    // Get the required color palette from the color-config.
+    $dark-color-palette: map.get($dark-color-config, $color);
+
+    @if $hue  !=null {
+        // Finally get the desired color with the specified hue.
+        $light-color: mat.get-color-from-palette($light-color-palette, $hue);
+
+        // Finally get the desired color with the specified hue.
+        $dark-color: mat.get-color-from-palette($dark-color-palette, $hue);
+
+        & {
+            #{$property}: $light-color;
+        }
+
+        .dark-theme & {
+            #{$property}: $dark-color;
+        }
+    }
+
+    @else {
+        // Finally get the desired color with the specified hue.
+        $light-color: mat.get-color-from-palette($light-color-palette);
+
+        // Finally get the desired color with the specified hue.
+        $dark-color: mat.get-color-from-palette($dark-color-palette);
+
+        & {
+            #{$property}: $light-color;
+        }
+
+        .dark-theme & {
+            #{$property}: $dark-color;
+        }
+    }
+}

@@ -1,3 +1,5 @@
+$toolbar-height: 64px;
+
 .flex-spacer {
   flex: 1;
 }
@@ -5,46 +7,63 @@
 a {
   display: flex;
   align-items: center;
+  padding: 0 4px;
 }
 
 @media (max-width: 768px) {
   .flex-spacer {
     justify-self: stretch;
-    display:none;
+    display: none;
   }
 
   mat-toolbar {
     display: grid;
-    grid-template-columns: 3fr 2fr 1fr;
+    grid-template-columns: 2fr auto auto auto auto;
     grid-template-rows: 100%;
     gap: 5px;
     align-content: center;
     justify-content: right;
+    height: $toolbar-height;
   }
 
   mat-toolbar * {
     font-size: small !important;
-    display:inline;
+    display: inline;
   }
 
   #home {
-    grid-column: 1/2;
-    grid-row: 1/1;
+    grid-column: 1;
+    grid-row: 1;
     justify-self: left;
   }
 
-  #account {
-    grid-column: 2/3;
-    grid-row: 1/1;
+  #users {
+    grid-column: 2;
+    grid-row: 1;
   }
+
+  #invite {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  #account {
+    grid-column: 4;
+    grid-row: 1;
+  }
+
   #logout {
-    grid-column: 3/4;
-    grid-row: 1/1;
+    grid-column: 5;
+    grid-row: 1;
     justify-self: right;
   }
 
   #logout a mat-icon {
     width: 80%;
+  }
+
+  .icon-label {
+    vertical-align: baseline;
   }
 
 }
