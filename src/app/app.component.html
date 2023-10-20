@@ -1,1 +1,15 @@
+<mat-toolbar color="primary" class="expanded-toolbar">
+    <span>
+        <a mat-button routerLink="/">
+            <mat-icon>home</mat-icon>
+            <span id="icon-label">Messages, your favorite app</span>
+        </a>
+    </span>
+    <span class="flex-spacer"></span>
+    <span>
+        <a mat-button (click)="this.auth.logout()" *ngIf="this.auth.isLoggedIn">
+            <mat-icon>logout</mat-icon>
+        </a>
+    </span>
+</mat-toolbar>
 <router-outlet></router-outlet>
