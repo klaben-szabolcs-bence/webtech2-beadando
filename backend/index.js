@@ -49,6 +49,7 @@ app.post('/api/login', async (req, res) => {
         console.log(user);
 
         req.session.userid = user.id;
+        req.session.admin = user.admin;
         req.session.save();
         res.status(200).send(user);
     });
@@ -125,6 +126,25 @@ app.put('/api/message', async (req, res) => {
     return res.status(201).send(resp);
 });
 
+app.delete('/api/message', async (req, res) => {
+    const { id } = req.body;
+
+    const msg = await Message.findOne({ id });
+    if (msg == undefined) {
+        return res.status(404).json({ "message": "Message not found" });
+    }
+
+    if (msg.senderId != req.session.userid && !req.session.admin) {
+        return res.status(401).json({ "message": "Unauthorized" });
+    }
+
+    Message.deleteOne({ id }).then(() => {
+        res.status(200).json({ "message": "Message deleted" });
+    }).catch((err) => {
+        res.status(500).json({ "message": "Error deleting message" });
+    });
+});
+
 app.put('/api/register', async (req, res) => {
     const { username, password, email } = req.body;
     const id = await User.count();
@@ -137,13 +157,8 @@ app.put('/api/register', async (req, res) => {
         return res.status(200).json({ "message": "Email already in use" });
     }
 
-    const inviter = await User.findOne({ "id": req.session.userid });
-    if (!inviter) {
-        return res.status(400).send('Invalid request');
-    }
-
-    if (!inviter.admin) {
-        return res.status(400).send('Not an admin');
+    if (!req.session.admin) {
+        return res.status(401).json({ "message": "Unauthorized" });
     }
 
     bycrypt.hash(password, 10, async (err, hash) => {
