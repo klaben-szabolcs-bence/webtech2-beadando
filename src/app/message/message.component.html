@@ -1,0 +1,7 @@
+<div class="message">
+    <div class="message-header">
+        <div class="message-author">{{ message.senderId }}</div>
+        <div class="message-date">{{ message.timestamp | date: 'short' }}</div>
+    </div>
+    <div class="message-body">{{ message.content }}</div>
+</div>
