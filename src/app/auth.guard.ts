@@ -17,23 +17,27 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    if (this.auth.isLoggedIn) {
-      return true;
+    const res = this.auth.autoLogin();
+    if (typeof res === 'boolean') {
+      if (res) {
+        console.log("Auth Guard: Passed (User is already logged in)"); 
+        return true;
+      } else {
+        console.warn("Auth Guard: Failed (User is not logged in)"); // Shouldn't happen
+        this.route.navigate(['/login']);
+        return false;
+      }
+    } else {
+      return res.pipe(map(result => {
+        if (!result) {
+          this.route.navigate(['/login']);
+          console.log("Auth Guard: Failed (User is not logged in and session invalidated)");
+          return false;
+        }
+        console.log("Auth Guard: Passed (User is logged in)");
+        return true;
+      }
+      ));
     }
-    return this.auth.isLoggedInOnServer().pipe(map(res => {
-      this.auth.LoggedInUser = -1;
-      if (!res.body) {
-        console.error("Server didn't return a user");
-        this.route.navigate(['/login']);
-        return false;
-      }
-      if (res.body.user == null) {
-        this.route.navigate(['/login']);
-        return false;
-      }
-      this.auth.setLoggedIn(true);
-      this.auth.LoggedInUser = res.body.user;
-      return true;
-    }));
   }
 }

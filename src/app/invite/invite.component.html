@@ -1,0 +1,70 @@
+<div>
+    <form (submit)="registerUser($event, username, password, confirmPassword, email)" [formGroup]="inviteForm"
+        appMatchPassword>
+        <mat-form-field>
+            <mat-label for="username">Username</mat-label>
+            <input matInput [formControl]="inviteForm.controls['username'] | abstractToFormControl" type="text"
+                #username id="username">
+            <mat-error *ngIf="inviteForm.controls['username'].hasError('required')">
+                You must enter a username
+            </mat-error>
+            <mat-error *ngIf="inviteForm.controls['username'].hasError('maxlength')">
+                Username must be less than 50 characters
+            </mat-error>
+        </mat-form-field>
+        <span>
+            <mat-form-field>
+                <mat-label for="password">Password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" #password id="password"
+                    [formControl]="inviteForm.controls['password'] | abstractToFormControl">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="inviteForm.controls['password'].hasError('required')">
+                    You must enter a password
+                </mat-error>
+                <mat-error *ngIf="inviteForm.controls['password'].hasError('minlength')">
+                    Password must be at least 6 characters
+                </mat-error>
+                <mat-error *ngIf="inviteForm.hasError('matchPassword')">
+                    Passwords do not match
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label for="confirmPassword">Confirm Password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" #confirmPassword id="confirmPassword"
+                    [formControl]="inviteForm.controls['confirmPassword'] | abstractToFormControl">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="inviteForm.controls['confirmPassword'].hasError('required')">
+                    You must confirm your password
+                </mat-error>
+                <mat-error *ngIf="inviteForm.controls['confirmPassword'].hasError('minlength')">
+                    Password must be at least 6 characters
+                </mat-error>
+                <mat-error *ngIf="inviteForm.hasError('matchPassword')">
+                    Passwords do not match
+                </mat-error>
+            </mat-form-field>
+
+        </span>
+        <mat-form-field>
+            <mat-label for="email">Email</mat-label>
+            <input matInput [formControl]="inviteForm.controls['email'] | abstractToFormControl" type="email" #email
+                id="email">
+            <mat-error *ngIf="inviteForm.controls['email'].hasError('required')">
+                You must enter an email
+            </mat-error>
+            <mat-error *ngIf="inviteForm.controls['email'].hasError('email')">
+                Not a valid email
+            </mat-error>
+        </mat-form-field>
+        <div>
+            <button mat-raised-button (click)="cancel($event)">Cancel</button>
+            <button mat-raised-button color="primary" type="submit">Invite</button>
+        </div>
+    </form>
+</div>

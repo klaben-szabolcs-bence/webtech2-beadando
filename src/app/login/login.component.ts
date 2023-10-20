@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -11,26 +12,39 @@ export class LoginComponent implements OnInit {
 
   constructor(private Auth: AuthService, private router: Router) { }
 
+  usernameFormControl = new FormControl('', [Validators.required, Validators.maxLength(50)]);
+  passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(6)]);
+
   hide = true;
 
   ngOnInit(): void {
-    if (this.Auth.isLoggedIn) {
-      this.router.navigate(['/messages']);
-      return
-    }
-    this.Auth.isLoggedInOnServer().subscribe(res => {
-      if (res.body?.user == null) {
-        return
+    const res = this.Auth.autoLogin();
+    if (typeof res === 'boolean') {
+      if (res) {
+        this.router.navigate(['/messages']);
       }
-      this.Auth.setLoggedIn(true);
-      this.Auth.LoggedInUser = res.body.user;
-      this.router.navigate(['/messages']);
-    });
+    } else {
+      res.subscribe(result => {
+        if (result) {
+          this.router.navigate(['/messages']);
+        }
+      }
+      );
+    }
   }
 
   loginUser(e: Event, username: HTMLInputElement, password: HTMLInputElement) {
     e.preventDefault();
-    this.Auth.getUserDetails(username.value, password.value).subscribe(response => {
+
+    if (username.value.length == 0 || password.value.length == 0) {
+      return
+    }
+
+    if (username.value.length > 50 || password.value.length < 6) {
+      return
+    }
+
+    this.Auth.authenticate(username.value, password.value).subscribe(response => {
       if (!response.body) {
         console.error("Server didn't return a user");
         return
@@ -41,6 +55,7 @@ export class LoginComponent implements OnInit {
       }
       this.Auth.LoggedInUser = response.body.id;
       this.Auth.setLoggedIn(true);
+      this.Auth.Admin = response.body.admin;
       this.router.navigate(['/messages']);
     });
   }
