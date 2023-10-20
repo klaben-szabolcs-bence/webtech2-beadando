@@ -8,7 +8,7 @@ import { AuthGuard } from './auth.guard';
 const routes: Routes = [
   { path: 'messages', component: MessagesComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/messages', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
 
