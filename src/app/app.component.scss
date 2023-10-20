@@ -7,9 +7,43 @@ a {
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .flex-spacer {
+    justify-self: stretch;
+    grid-column-start: 3;
+  }
+
+  mat-toolbar {
+    display: grid;
+    grid-template-columns: 10px auto auto auto;
+    gap: 5px;
+    align-content: center;
+    justify-content: right;
+  }
+
+  #home {
+    grid-column-start: 2;
+  }
+
+  #logout {
+    grid-column-start: 4;
+    text-align: right;
+  }
+
+  #logout a mat-icon {
+    width: 80%;
+  }
+
+}
+
 #icon-label {
   margin-left: 8px;
-  font-size: 20px;
-  vertical-align: middle;
-  
+  display: inline;
+}
+
+@media (min-width: 768px) {
+  #icon-label {
+    font-size: 20px;
+    vertical-align: middle;
+  }
 }

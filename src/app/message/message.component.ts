@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Message } from '../message';
+import { Message } from '../models/message';
 
 @Component({
   selector: 'app-message',
@@ -11,7 +11,7 @@ export class MessageComponent implements OnInit {
   @Input() public message: Message = {
     _id: '',
     id: -1,
-    senderId: "",
+    senderId: -1,
     timestamp: new Date(),
     content: ""
   };

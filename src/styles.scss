@@ -9,6 +9,7 @@
 @include mat.input-theme(light.$theme);
 @include mat.icon-theme(light.$theme);
 @include mat.toolbar-theme(light.$theme);
+@include mat.card-theme(light.$theme);
 
 html,
 body {

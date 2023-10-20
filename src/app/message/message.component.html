@@ -1,7 +1,7 @@
-<div class="message">
-    <div class="message-header">
-        <div class="message-author">{{ message.senderId }}</div>
-        <div class="message-date">{{ message.timestamp | date: 'short' }}</div>
-    </div>
-    <div class="message-body">{{ message.content }}</div>
-</div>
+<mat-card class="message-card">
+    <mat-card-header>
+        <mat-card-title>{{ message.senderId | userIdToName | async }}</mat-card-title>
+        <mat-card-subtitle>{{ message.timestamp | date:'medium' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>{{ message.content }}</mat-card-content>
+</mat-card>
